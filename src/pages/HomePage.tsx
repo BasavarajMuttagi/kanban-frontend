@@ -45,10 +45,12 @@ const HomePage = () => {
 
     destColumn.forEach((task, index) => {
       task.priority = index;
+      task.status = destination.droppableId as TaskBoardKeys;
     });
 
     sourceColumn.forEach((task, index) => {
       task.priority = index;
+      task.status = source.droppableId as TaskBoardKeys;
     });
 
     // update the state
