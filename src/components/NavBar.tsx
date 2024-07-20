@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const NavBar = () => {
   return (
-    <nav className="bg-blue-500 h-14 flex items-center justify-between px-5 font-medium text-white tracking-wider">
+    <nav className="bg-blue-500 h-16 flex items-center justify-between px-5 font-medium text-white tracking-wider">
       <NavLink to={"/"} className="flex items-center space-x-1.5">
         <h1 className="text-2xl">Kanban</h1>
         <Notepad size={32} weight="fill" className="text-white" />

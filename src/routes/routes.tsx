@@ -1,24 +1,28 @@
 import { createBrowserRouter } from "react-router-dom";
 import Public from "./Public";
-import NavBar from "../components/NavBar";
-import Login from "../components/Login";
-import SignUp from "../components/SignUp";
+import MainLayout from "../layouts/MainLayout";
+import LoginPage from "../pages/LoginPage";
+import SignUpPage from "../pages/SignUpPage";
 
 const routes = createBrowserRouter([
   {
-    element: <Public />,
+    element: (
+      <MainLayout>
+        <Public />
+      </MainLayout>
+    ),
     children: [
       {
         path: "/",
-        element: <NavBar />,
+        element: <div>Hi</div>,
       },
       {
         path: "/login",
-        element: <Login />,
+        element: <LoginPage />,
       },
       {
         path: "/signup",
-        element: <SignUp />,
+        element: <SignUpPage />,
       },
     ],
   },
