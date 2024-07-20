@@ -16,7 +16,7 @@ const TaskCard = forwardRef<
     <div
       ref={ref}
       {...rest}
-      className="shadow  h-44 w-full rounded-md bg-blue-200/70 p-3 space-y-1.5 flex flex-col justify-between"
+      className="shadow  h-44 w-full rounded-md bg-blue-200 p-3 space-y-1.5 flex flex-col justify-between"
     >
       <p className="font-semibold text-base text-neutral-900 truncate">
         {title}

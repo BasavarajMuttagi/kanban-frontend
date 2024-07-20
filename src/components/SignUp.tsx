@@ -25,7 +25,7 @@ const SignUp = () => {
           <input
             {...register("firstname")}
             placeholder="First Name"
-            className="w-full p-2 rounded-sm outline-none border border-neutral-400/80 text-neutral-500 font-medium"
+            className="w-full p-2 rounded-md outline-none border border-neutral-400/80 text-neutral-500 font-medium"
           />
           {errors.firstname && (
             <p className="text-red-400 text-xs absolute">
@@ -37,7 +37,7 @@ const SignUp = () => {
           <input
             {...register("lastname")}
             placeholder="Last Name"
-            className="w-full p-2 rounded-sm outline-none border border-neutral-400/80 text-neutral-500 font-medium"
+            className="w-full p-2 rounded-md outline-none border border-neutral-400/80 text-neutral-500 font-medium"
           />
           {errors.lastname && (
             <p className="text-red-400 text-xs absolute">
@@ -49,7 +49,7 @@ const SignUp = () => {
           <input
             {...register("email")}
             placeholder="Email"
-            className="w-full p-2 rounded-sm outline-none border border-neutral-400/80 text-neutral-500 font-medium"
+            className="w-full p-2 rounded-md outline-none border border-neutral-400/80 text-neutral-500 font-medium"
           />
           {errors.email && (
             <p className="text-red-400 text-xs absolute">
@@ -61,7 +61,7 @@ const SignUp = () => {
           <input
             {...register("password")}
             placeholder="Password"
-            className="w-full p-2 rounded-sm outline-none border border-neutral-400/80 text-neutral-500 font-medium"
+            className="w-full p-2 rounded-md outline-none border border-neutral-400/80 text-neutral-500 font-medium"
           />
           {errors.password && (
             <p className="text-red-400 text-xs absolute">
@@ -73,7 +73,7 @@ const SignUp = () => {
           <input
             {...register("confirmpassword")}
             placeholder="Confirm password"
-            className="w-full p-2 rounded-sm outline-none border border-neutral-400/80 text-neutral-500 font-medium"
+            className="w-full p-2 rounded-md outline-none border border-neutral-400/80 text-neutral-500 font-medium"
           />
           {errors.confirmpassword && (
             <p className="text-red-400 text-xs absolute">
@@ -83,7 +83,7 @@ const SignUp = () => {
         </div>
         <button
           type="submit"
-          className="px-3 py-2 rounded-sm bg-blue-500 text-white w-full font-semibold tracking-wider hover:brightness-90"
+          className="px-3 py-2 rounded-md bg-blue-500 text-white w-full font-semibold tracking-wider hover:brightness-90"
         >
           Sign up
         </button>
@@ -98,7 +98,7 @@ const SignUp = () => {
         </Link>
       </div>
 
-      <button className="px-3 py-2 rounded-sm  text-neutral-900 border border-neutral-500 w-full font-semibold tracking-wider flex space-x-1 items-center justify-center hover:bg-neutral-100">
+      <button className="px-3 py-2 rounded-md  text-neutral-900 border border-neutral-500 w-full font-semibold tracking-wider flex space-x-1 items-center justify-center hover:bg-neutral-100">
         <span>Sign up with</span>
         <img src={google} alt="google icon" className="aspect-square w-7" />
       </button>
