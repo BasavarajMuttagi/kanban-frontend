@@ -3,6 +3,7 @@ import Public from "./Public";
 import MainLayout from "../layouts/MainLayout";
 import LoginPage from "../pages/LoginPage";
 import SignUpPage from "../pages/SignUpPage";
+import HomePage from "../pages/HomePage";
 
 const routes = createBrowserRouter([
   {
@@ -14,7 +15,7 @@ const routes = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <div>Hi</div>,
+        element: <HomePage />,
       },
       {
         path: "/login",
