@@ -44,11 +44,14 @@ const KanbanBoard = () => {
   const { boardId } = useParams();
   const [board, setBoard] = useState<Board>(initialBoard);
   const [show, setShow] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const todoColumn = board.columns.filter(
     (eachColumn) => eachColumn.name === "TODO",
   );
 
+  const handleTaskAdded = async () => {
+    getTaskById().then((res) => setBoard(res.data));
+  };
   const getTaskById = useCallback(async () => {
     const result = await apiClient.get(`/board/${boardId}`);
     return result;
@@ -58,11 +61,12 @@ const KanbanBoard = () => {
     getTaskById().then((res) => setBoard(res.data));
   }, [getTaskById]);
 
-  const onDragEnd = (result: DropResult) => {
+  const onDragEnd = async (result: DropResult) => {
     const { source, destination } = result;
 
     // Dropped outside the list
     if (!destination) {
+      console.log("no change");
       return;
     }
 
@@ -71,9 +75,9 @@ const KanbanBoard = () => {
       source.droppableId === destination.droppableId &&
       source.index === destination.index
     ) {
+      console.log("same position");
       return;
     }
-
     // Moved to a different column
     const sourceColumn = board.columns.find(
       (col) => col.name === source.droppableId,
@@ -98,10 +102,66 @@ const KanbanBoard = () => {
         return col; // Return other columns unchanged
       });
 
+      if (sourceColumn.columnId === destColumn.columnId) {
+        console.log("sort in same col", updatedColumns);
+        //update only one tasks order in DB
+        await updateOrder(
+          sourceColumn.taskOrderId,
+          sourceColumn.tasks.map((eachItem) => eachItem._id),
+        );
+      } else {
+        console.log("moved to different col");
+        //update source tasks order &  destination task status and tasks order
+        await updateSND(
+          destColumn.name,
+          movedTask._id,
+          sourceColumn.taskOrderId,
+          destColumn.taskOrderId,
+          sourceColumn.tasks.map((eachItem) => eachItem._id),
+          destColumn.tasks.map((eachItem) => eachItem._id),
+        );
+      }
+
       setBoard({
         ...board,
         columns: updatedColumns,
       });
+    }
+  };
+
+  const updateOrder = async (taskOrderId: string, tasks: string[]) => {
+    try {
+      setIsLoading(true);
+      await apiClient.post("/board/task/update/order", { taskOrderId, tasks });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateSND = async (
+    status: string,
+    taskId: string,
+    sourceTaskOrderId: string,
+    destinationTaskOrderId: string,
+    sourceTasks: string[],
+    destinationTasks: string[],
+  ) => {
+    try {
+      setIsLoading(true);
+      await apiClient.post("/board/task/update/source-destination", {
+        status,
+        taskId,
+        sourceTaskOrderId,
+        destinationTaskOrderId,
+        sourceTasks,
+        destinationTasks,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,7 +174,7 @@ const KanbanBoard = () => {
         Add Task
       </button>
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="p-2 flex flex-col  space-y-5 sm:space-y-0 sm:flex-row sm:justify-between sm:items-start sm:mt-10 sm:space-x-10 sm:px-4">
+        <div className="p-2 flex flex-col  space-y-5 sm:grid grid-cols-3 sm:space-y-0 sm:gap-x-4">
           {board.columns.map(({ columnId, tasks, name }) => (
             <Droppable key={columnId} droppableId={name}>
               {(provided) => (
@@ -154,8 +214,18 @@ const KanbanBoard = () => {
       {show &&
         createPortal(
           <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 p-3">
-            <TaskForm closeDialog={setShow} columnId={todoColumn[0].columnId} />
+            <TaskForm
+              closeDialog={setShow}
+              columnId={todoColumn[0].columnId}
+              refetch={handleTaskAdded}
+            />
           </div>,
+          document.body,
+        )}
+
+      {isLoading &&
+        createPortal(
+          <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 p-3"></div>,
           document.body,
         )}
     </div>

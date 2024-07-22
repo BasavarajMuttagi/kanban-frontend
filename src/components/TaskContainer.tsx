@@ -13,7 +13,7 @@ const TaskContainer = forwardRef<
     <div
       ref={ref}
       {...rest}
-      className="w-full h-full border border-neutral-300 rounded-md  px-2 py-5 sm:px-3"
+      className="w-full h-fit border border-neutral-300 rounded-md px-2 py-5 sm:px-3"
     >
       <div className="w-full flex flex-col items-center space-y-4 shrink-0">
         <div className="bg-blue-500 p-2 rounded-sm w-full">

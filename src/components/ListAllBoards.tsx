@@ -8,12 +8,16 @@ import BoardForm from "./BoardForm";
 const ListAllBoards = () => {
   const [boards, setBoards] = useState<Board[]>([]);
   const [show, setShow] = useState(false);
-  const getTaskById = async () => {
+  const getAllBoards = async () => {
     const result = await apiClient.get("/board/list");
     return result;
   };
+
+  const handleTaskAdded = async () => {
+    getAllBoards().then((res) => setBoards(res.data));
+  };
   useEffect(() => {
-    getTaskById().then((res) => setBoards(res.data));
+    getAllBoards().then((res) => setBoards(res.data));
   }, []);
 
   const navigate = useNavigate();
@@ -39,7 +43,7 @@ const ListAllBoards = () => {
       {show &&
         createPortal(
           <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 p-3">
-            <BoardForm closeDialog={setShow} />
+            <BoardForm closeDialog={setShow} refetch={handleTaskAdded} />
           </div>,
           document.body,
         )}

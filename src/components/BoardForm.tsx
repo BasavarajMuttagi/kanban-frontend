@@ -6,8 +6,10 @@ import apiClient from "../axios/apiClient";
 
 const BoardForm = ({
   closeDialog,
+  refetch,
 }: {
   closeDialog: Dispatch<SetStateAction<boolean>>;
+  refetch: () => void;
 }) => {
   const {
     register,
@@ -22,6 +24,7 @@ const BoardForm = ({
     try {
       await apiClient.post("/board/create-board", data);
       reset();
+      refetch();
       closeDialog((prev) => !prev);
     } catch (error) {
       console.log(error);

@@ -7,9 +7,11 @@ import apiClient from "../axios/apiClient";
 const TaskForm = ({
   closeDialog,
   columnId,
+  refetch,
 }: {
   closeDialog: Dispatch<SetStateAction<boolean>>;
   columnId: string;
+  refetch: () => void;
 }) => {
   const {
     register,
@@ -25,6 +27,7 @@ const TaskForm = ({
     try {
       await apiClient.post("/board/task/create", data);
       reset();
+      refetch();
       closeDialog((prev) => !prev);
     } catch (error) {
       console.log(error);
