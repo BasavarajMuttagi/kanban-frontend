@@ -2,15 +2,23 @@ type Task = {
   _id: string;
   title: string;
   description: string;
+  status: string;
   createdAt: string;
-  priority: number;
-  status: "TODO" | "IN_PROGRESS" | "DONE";
 };
 
-type TaskBoard = {
-  TODO: Task[];
-  IN_PROGRESS: Task[];
-  DONE: Task[];
+type Column = {
+  columnId: string;
+  name: "TODO" | "IN_PROGRESS" | "DONE";
+  taskOrderId: string;
+  tasks: Task[];
 };
 
-export type { Task, TaskBoard };
+type Board = {
+  boardId: string;
+  name: string;
+  description: string;
+  columns: Column[];
+  createdAt: string;
+};
+
+export type { Board, Column, Task };

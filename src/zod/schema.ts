@@ -34,8 +34,16 @@ type userSignUpType = z.infer<typeof userSignUpSchema>;
 const newTaskSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
+  columnId: z.string().min(24),
 });
 
 type newTaskType = z.infer<typeof newTaskSchema>;
-export type { userLoginType, userSignUpType, newTaskType };
-export { userLoginSchema, userSignUpSchema, newTaskSchema };
+
+const newBoardSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().min(1),
+});
+
+type newBoardType = z.infer<typeof newBoardSchema>;
+export type { userLoginType, userSignUpType, newTaskType, newBoardType };
+export { userLoginSchema, userSignUpSchema, newTaskSchema, newBoardSchema };

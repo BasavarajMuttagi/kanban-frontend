@@ -3,7 +3,9 @@ import Public from "./Public";
 import MainLayout from "../layouts/MainLayout";
 import LoginPage from "../pages/LoginPage";
 import SignUpPage from "../pages/SignUpPage";
-import HomePage from "../pages/HomePage";
+import Private from "./Private";
+import ListAllBoards from "../components/ListAllBoards";
+import KanbanBoard from "../components/KanbanBoard";
 
 const routes = createBrowserRouter([
   {
@@ -14,16 +16,29 @@ const routes = createBrowserRouter([
     ),
     children: [
       {
-        path: "/",
-        element: <HomePage />,
-      },
-      {
         path: "/login",
         element: <LoginPage />,
       },
       {
         path: "/signup",
         element: <SignUpPage />,
+      },
+    ],
+  },
+  {
+    element: (
+      <MainLayout>
+        <Private />
+      </MainLayout>
+    ),
+    children: [
+      {
+        path: "/",
+        element: <ListAllBoards />,
+      },
+      {
+        path: "/board/:boardId",
+        element: <KanbanBoard />,
       },
     ],
   },

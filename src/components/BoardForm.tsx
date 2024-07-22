@@ -1,48 +1,46 @@
 import { useForm } from "react-hook-form";
-import { newTaskSchema, newTaskType } from "../zod/schema";
+import { newBoardSchema, newBoardType } from "../zod/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction } from "react";
 import apiClient from "../axios/apiClient";
 
-const TaskForm = ({
+const BoardForm = ({
   closeDialog,
-  columnId,
 }: {
   closeDialog: Dispatch<SetStateAction<boolean>>;
-  columnId: string;
 }) => {
   const {
     register,
     reset,
     handleSubmit,
     formState: { errors },
-  } = useForm<newTaskType>({
-    defaultValues: { columnId },
-    resolver: zodResolver(newTaskSchema),
+  } = useForm<newBoardType>({
+    resolver: zodResolver(newBoardSchema),
   });
 
-  const submitHandler = async (data: newTaskType) => {
+  const submitHandler = async (data: newBoardType) => {
     try {
-      await apiClient.post("/board/task/create", data);
+      await apiClient.post("/board/create-board", data);
       reset();
       closeDialog((prev) => !prev);
     } catch (error) {
       console.log(error);
     }
+    reset();
   };
   return (
     <div className="max-w-md flex flex-col items-center space-y-8 rounded-md shadow w-full py-5 px-4 bg-white">
-      <h1 className="font-bold text-2xl">Add Task</h1>
+      <h1 className="font-bold text-2xl">Create New Board</h1>
       <form className="space-y-7 w-full" onSubmit={handleSubmit(submitHandler)}>
         <div className="relative">
           <input
-            {...register("title")}
-            placeholder="Title"
+            {...register("name")}
+            placeholder="Name"
             className="w-full p-2 rounded-sm outline-none border border-neutral-400/80 text-neutral-500 font-medium"
           />
-          {errors.title && (
+          {errors.name && (
             <p className="text-red-400 text-xs absolute">
-              {errors.title?.message}
+              {errors.name?.message}
             </p>
           )}
         </div>
@@ -69,7 +67,7 @@ const TaskForm = ({
             type="submit"
             className="px-3 py-2 rounded-md bg-blue-500 text-white  font-semibold tracking-wider hover:brightness-90"
           >
-            Add Task
+            Create
           </button>
         </div>
       </form>
@@ -77,4 +75,4 @@ const TaskForm = ({
   );
 };
 
-export default TaskForm;
+export default BoardForm;
