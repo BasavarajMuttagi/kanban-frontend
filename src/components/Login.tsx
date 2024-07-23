@@ -1,9 +1,17 @@
 import { useForm } from "react-hook-form";
 import { userLoginSchema, userLoginType } from "../zod/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import google from "../assets/google.png";
+import { useState } from "react";
+import useKanbanStore from "../store";
+import apiClient from "../axios/apiClient";
+import toast from "react-hot-toast";
+import { CircleNotch } from "@phosphor-icons/react";
 const Login = () => {
+  const navigate = useNavigate();
+  const { setToken, setDisplayName } = useKanbanStore();
+  const [isSpin, setIsSpin] = useState(false);
   const {
     register,
     reset,
@@ -13,14 +21,25 @@ const Login = () => {
     resolver: zodResolver(userLoginSchema),
   });
 
-  const submitHandler = (data: userLoginType) => {
-    console.log(data);
-    reset();
+  const onSubmit = async (data: userLoginType) => {
+    try {
+      const res = await apiClient.post("/auth/login", data);
+      toast.success("Logged in successfully");
+      setToken(res.data.token);
+      setDisplayName(res.data.user.fullname);
+      navigate("/");
+      reset();
+      location.reload();
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setIsSpin(false);
+    }
   };
   return (
     <div className="max-w-md flex flex-col items-center space-y-8 border-blue-500 border rounded-md shadow  w-full py-10 px-4">
       <h1 className="font-bold text-2xl">Login</h1>
-      <form className="space-y-7 w-full" onSubmit={handleSubmit(submitHandler)}>
+      <form className="space-y-7 w-full" onSubmit={handleSubmit(onSubmit)}>
         <div className="relative">
           <input
             {...register("email")}
@@ -47,9 +66,10 @@ const Login = () => {
         </div>
         <button
           type="submit"
-          className="px-3 py-2 rounded-md bg-blue-500 text-white w-full font-semibold tracking-wider hover:brightness-90"
+          className="px-3 py-2 rounded-md bg-blue-500 text-white w-full font-semibold tracking-wider flex items-center justify-center space-x-2 hover:brightness-90"
         >
-          Login
+          <p>Login</p>
+          {isSpin && <CircleNotch size={18} className="animate-spin" />}
         </button>
       </form>
       <div className="flex items-center space-x-2">
