@@ -1,17 +1,21 @@
 import { useForm } from "react-hook-form";
 import { userLoginSchema, userLoginType } from "../zod/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import google from "../assets/google.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useKanbanStore from "../store";
 import apiClient from "../axios/apiClient";
 import toast from "react-hot-toast";
 import { CircleNotch } from "@phosphor-icons/react";
+
 const Login = () => {
   const navigate = useNavigate();
   const { setToken, setDisplayName } = useKanbanStore();
   const [isSpin, setIsSpin] = useState(false);
+  const [isSpinGoogle, setIsSpinGoogle] = useState(false);
+
+  const location = useLocation();
   const {
     register,
     reset,
@@ -23,17 +27,35 @@ const Login = () => {
 
   const onSubmit = async (data: userLoginType) => {
     try {
+      setIsSpin(true);
       const res = await apiClient.post("/auth/login", data);
       toast.success("Logged in successfully");
       setToken(res.data.token);
       setDisplayName(res.data.user.fullname);
-      navigate("/");
+      navigate("/", { replace: true });
       reset();
-      location.reload();
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
       setIsSpin(false);
+    }
+  };
+
+  useEffect(() => {
+    const state = location.state;
+    if (state && state.error) {
+      toast.error(state.error);
+    }
+  }, [location]);
+
+  const googleLogin = async () => {
+    try {
+      setIsSpinGoogle(true);
+      await apiClient.get("/auth/google");
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setIsSpinGoogle(false);
     }
   };
   return (
@@ -82,7 +104,11 @@ const Login = () => {
         </Link>
       </div>
 
-      <button className="px-3 py-2 rounded-md  text-neutral-900 border border-neutral-500 w-full font-semibold tracking-wider flex space-x-1 items-center justify-center hover:bg-neutral-100">
+      <button
+        disabled={isSpinGoogle}
+        onClick={() => googleLogin()}
+        className="px-3 py-2 rounded-md  text-neutral-900 border border-neutral-500 w-full font-semibold tracking-wider flex space-x-1 items-center justify-center hover:bg-neutral-100"
+      >
         <span>Login with</span>
         <img src={google} alt="google icon" className="aspect-square w-7" />
       </button>

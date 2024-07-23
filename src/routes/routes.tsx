@@ -6,6 +6,7 @@ import SignUpPage from "../pages/SignUpPage";
 import Private from "./Private";
 import ListAllBoards from "../components/ListAllBoards";
 import KanbanBoard from "../components/KanbanBoard";
+import HandleCallback from "../components/HandleCallback";
 
 const routes = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const routes = createBrowserRouter([
       {
         path: "/signup",
         element: <SignUpPage />,
+      },
+      {
+        path: "/redirect",
+        element: <HandleCallback />,
       },
     ],
   },

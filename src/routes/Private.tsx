@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import useKanbanStore from "../store";
 
-type tokenType = {
+export type tokenType = {
   userId: string;
   email: string;
   name: string;
