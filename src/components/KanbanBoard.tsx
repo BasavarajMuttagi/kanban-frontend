@@ -180,7 +180,7 @@ const KanbanBoard = () => {
         </button>
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="p-2 flex flex-col  space-y-5 sm:grid grid-cols-3 sm:space-y-0 sm:gap-x-4">
-            {board.columns.map(({ columnId, tasks, name }) => (
+            {board.columns.map(({ columnId, tasks, name, taskOrderId }) => (
               <Droppable key={columnId} droppableId={name}>
                 {(provided) => (
                   <TaskContainer
@@ -193,10 +193,12 @@ const KanbanBoard = () => {
                         <Draggable key={_id} draggableId={_id} index={index}>
                           {(provided) => (
                             <TaskCard
+                              taskOrderId={taskOrderId}
                               title={title}
                               description={description}
                               createdAt={createdAt}
                               _id={_id}
+                              columnId={columnId}
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
