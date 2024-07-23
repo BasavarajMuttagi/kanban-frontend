@@ -8,13 +8,12 @@ type Props = {
   description: string;
   createdAt: string;
   _id: string;
-  status: "TODO" | "IN_PROGRESS" | "DONE";
 };
 
 const TaskCard = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement> & Props
->(({ title, description, createdAt, _id, status, ...rest }, ref) => {
+>(({ title, description, createdAt, _id, ...rest }, ref) => {
   const [show, setShow] = useState(false);
   return (
     <div
@@ -55,7 +54,6 @@ const TaskCard = forwardRef<
               taskId={_id}
               title={title}
               description={description}
-              status={status}
             />
           </div>,
           document.body,

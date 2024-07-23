@@ -189,10 +189,7 @@ const KanbanBoard = () => {
                     status={name}
                   >
                     {tasks.map(
-                      (
-                        { _id, createdAt, description, title, status },
-                        index,
-                      ) => (
+                      ({ _id, createdAt, description, title }, index) => (
                         <Draggable key={_id} draggableId={_id} index={index}>
                           {(provided) => (
                             <TaskCard
@@ -200,7 +197,6 @@ const KanbanBoard = () => {
                               description={description}
                               createdAt={createdAt}
                               _id={_id}
-                              status={status}
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
