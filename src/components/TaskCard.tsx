@@ -16,7 +16,6 @@ type Props = {
   description: string;
   createdAt: string;
   _id: string;
-  columnId: string;
   taskOrderId: string;
 };
 
@@ -31,6 +30,7 @@ const TaskCard = forwardRef<
   const [isLoading, setIsLoading] = useState(false);
   const switchFormType = (formType: "VIEW" | "UPDATE") => {
     setFormType(formType);
+    setShow(true);
     if (formType === "UPDATE") {
       setHeading("Update Task");
     } else {
@@ -58,7 +58,6 @@ const TaskCard = forwardRef<
 
   return (
     <div
-      aria-disabled={isLoading}
       ref={ref}
       {...rest}
       className={twMerge(
@@ -76,8 +75,8 @@ const TaskCard = forwardRef<
         <div className="text-xs text-neutral-500 font-medium">{createdAt}</div>
         <div className="flex items-center space-x-5 justify-end">
           <button
-            onClick={(e) => {
-              deleteTaskAndUpdateOrder(_id, taskOrderId), e.stopPropagation();
+            onClick={() => {
+              deleteTaskAndUpdateOrder(_id, taskOrderId);
             }}
           >
             {isLoading ? (

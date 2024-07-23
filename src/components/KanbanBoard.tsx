@@ -198,7 +198,6 @@ const KanbanBoard = () => {
                               description={description}
                               createdAt={createdAt}
                               _id={_id}
-                              columnId={columnId}
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
