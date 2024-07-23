@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import {
   DragDropContext,
   Droppable,
@@ -39,7 +39,8 @@ const initialBoard: Board = {
   ],
   createdAt: "",
 };
-
+type RefetchFunction = () => void;
+export const RefetchContext = createContext<RefetchFunction>(() => {});
 const KanbanBoard = () => {
   const { boardId } = useParams();
   const [board, setBoard] = useState<Board>(initialBoard);
@@ -49,7 +50,7 @@ const KanbanBoard = () => {
     (eachColumn) => eachColumn.name === "TODO",
   );
 
-  const handleTaskAdded = async () => {
+  const handleRefetch = async () => {
     getTaskById().then((res) => setBoard(res.data));
   };
   const getTaskById = useCallback(async () => {
@@ -89,7 +90,10 @@ const KanbanBoard = () => {
     if (sourceColumn && destColumn) {
       const [movedTask] = sourceColumn.tasks.splice(source.index, 1);
 
-      movedTask.status = destination.droppableId;
+      movedTask.status = destination.droppableId as
+        | "TODO"
+        | "IN_PROGRESS"
+        | "DONE";
 
       destColumn.tasks.splice(destination.index, 0, movedTask);
 
@@ -166,69 +170,74 @@ const KanbanBoard = () => {
   };
 
   return (
-    <div className="mt-5 space-y-5">
-      <button
-        onClick={() => setShow(true)}
-        className="font-medium px-5 py-1.5 ml-2 rounded-md text-white bg-blue-500 sm:ml-4"
-      >
-        Add Task
-      </button>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className="p-2 flex flex-col  space-y-5 sm:grid grid-cols-3 sm:space-y-0 sm:gap-x-4">
-          {board.columns.map(({ columnId, tasks, name }) => (
-            <Droppable key={columnId} droppableId={name}>
-              {(provided) => (
-                <TaskContainer
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  status={name}
-                >
-                  {tasks.map(
-                    ({ _id, createdAt, description, title }, index) => (
-                      <Draggable key={_id} draggableId={_id} index={index}>
-                        {(provided) => (
-                          <TaskCard
-                            title={title}
-                            description={description}
-                            createdAt={createdAt}
-                            _id={_id}
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={{
-                              ...provided.draggableProps.style,
-                            }}
-                          />
-                        )}
-                      </Draggable>
-                    ),
-                  )}
-                  {provided.placeholder}
-                </TaskContainer>
-              )}
-            </Droppable>
-          ))}
-        </div>
-      </DragDropContext>
+    <RefetchContext.Provider value={handleRefetch}>
+      <div className="mt-5 space-y-5">
+        <button
+          onClick={() => setShow(true)}
+          className="font-medium px-5 py-1.5 ml-2 rounded-md text-white bg-blue-500 sm:ml-4"
+        >
+          Add Task
+        </button>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className="p-2 flex flex-col  space-y-5 sm:grid grid-cols-3 sm:space-y-0 sm:gap-x-4">
+            {board.columns.map(({ columnId, tasks, name }) => (
+              <Droppable key={columnId} droppableId={name}>
+                {(provided) => (
+                  <TaskContainer
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    status={name}
+                  >
+                    {tasks.map(
+                      (
+                        { _id, createdAt, description, title, status },
+                        index,
+                      ) => (
+                        <Draggable key={_id} draggableId={_id} index={index}>
+                          {(provided) => (
+                            <TaskCard
+                              title={title}
+                              description={description}
+                              createdAt={createdAt}
+                              _id={_id}
+                              status={status}
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={{
+                                ...provided.draggableProps.style,
+                              }}
+                            />
+                          )}
+                        </Draggable>
+                      ),
+                    )}
+                    {provided.placeholder}
+                  </TaskContainer>
+                )}
+              </Droppable>
+            ))}
+          </div>
+        </DragDropContext>
 
-      {show &&
-        createPortal(
-          <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 p-3">
-            <TaskForm
-              closeDialog={setShow}
-              columnId={todoColumn[0].columnId}
-              refetch={handleTaskAdded}
-            />
-          </div>,
-          document.body,
-        )}
+        {show &&
+          createPortal(
+            <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 p-3">
+              <TaskForm
+                closeDialog={setShow}
+                columnId={todoColumn[0].columnId}
+              />
+            </div>,
+            document.body,
+          )}
 
-      {isLoading &&
-        createPortal(
-          <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 p-3"></div>,
-          document.body,
-        )}
-    </div>
+        {isLoading &&
+          createPortal(
+            <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 p-3"></div>,
+            document.body,
+          )}
+      </div>
+    </RefetchContext.Provider>
   );
 };
 

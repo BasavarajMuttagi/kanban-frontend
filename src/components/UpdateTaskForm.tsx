@@ -1,16 +1,22 @@
 import { useForm } from "react-hook-form";
-import { newTaskSchema, newTaskType } from "../zod/schema";
+import { updateTaskSchema, updateTaskType } from "../zod/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, useContext } from "react";
 import apiClient from "../axios/apiClient";
 import { RefetchContext } from "./KanbanBoard";
 
-const TaskForm = ({
+const UpdateTaskForm = ({
   closeDialog,
-  columnId,
+  taskId,
+  title,
+  description,
+  status,
 }: {
   closeDialog: Dispatch<SetStateAction<boolean>>;
-  columnId: string;
+  taskId: string;
+  title: string;
+  description: string;
+  status: "TODO" | "IN_PROGRESS" | "DONE";
 }) => {
   const refetch = useContext(RefetchContext);
   const {
@@ -18,14 +24,14 @@ const TaskForm = ({
     reset,
     handleSubmit,
     formState: { errors },
-  } = useForm<newTaskType>({
-    defaultValues: { columnId },
-    resolver: zodResolver(newTaskSchema),
+  } = useForm<updateTaskType>({
+    defaultValues: { title, description, status },
+    resolver: zodResolver(updateTaskSchema),
   });
 
-  const submitHandler = async (data: newTaskType) => {
+  const submitHandler = async (data: updateTaskType) => {
     try {
-      await apiClient.post("/board/task/create", data);
+      await apiClient.post(`/board/task/update/${taskId}`, data);
       reset();
       refetch();
       closeDialog((prev) => !prev);
@@ -35,7 +41,7 @@ const TaskForm = ({
   };
   return (
     <div className="max-w-md flex flex-col items-center space-y-8 rounded-md shadow w-full py-5 px-4 bg-white">
-      <h1 className="font-bold text-2xl">Add Task</h1>
+      <h1 className="font-bold text-2xl">Update Task</h1>
       <form className="space-y-7 w-full" onSubmit={handleSubmit(submitHandler)}>
         <div className="relative">
           <input
@@ -61,6 +67,26 @@ const TaskForm = ({
             </p>
           )}
         </div>
+        <div className="relative flex items-center space-x-2">
+          <label htmlFor="dropdown" className="text-neutral-500">
+            Status:
+          </label>
+
+          <select
+            {...register("status")}
+            className="w-full border border-neutral-400/80 rounded-md px-3 py-2 outline-none text-neutral-500"
+            id="dropdown"
+          >
+            <option value="TODO">To Do</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="DONE">Done</option>
+          </select>
+          {errors.status && (
+            <p className="text-red-400 text-xs absolute">
+              {errors.status?.message}
+            </p>
+          )}
+        </div>
         <div className="flex items-center justify-between">
           <button
             onClick={() => closeDialog((prev) => !prev)}
@@ -72,7 +98,7 @@ const TaskForm = ({
             type="submit"
             className="px-3 py-2 rounded-md bg-blue-500 text-white  font-semibold tracking-wider hover:brightness-90"
           >
-            Add Task
+            Update Task
           </button>
         </div>
       </form>
@@ -80,4 +106,4 @@ const TaskForm = ({
   );
 };
 
-export default TaskForm;
+export default UpdateTaskForm;

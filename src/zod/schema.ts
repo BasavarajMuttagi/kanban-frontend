@@ -39,11 +39,31 @@ const newTaskSchema = z.object({
 
 type newTaskType = z.infer<typeof newTaskSchema>;
 
+const updateTaskSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  status: z.enum(["TODO", "IN_PROGRESS", "DONE"]),
+});
+
+type updateTaskType = z.infer<typeof updateTaskSchema>;
+
 const newBoardSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
 });
 
 type newBoardType = z.infer<typeof newBoardSchema>;
-export type { userLoginType, userSignUpType, newTaskType, newBoardType };
-export { userLoginSchema, userSignUpSchema, newTaskSchema, newBoardSchema };
+export type {
+  userLoginType,
+  userSignUpType,
+  newTaskType,
+  newBoardType,
+  updateTaskType,
+};
+export {
+  userLoginSchema,
+  userSignUpSchema,
+  newTaskSchema,
+  newBoardSchema,
+  updateTaskSchema,
+};

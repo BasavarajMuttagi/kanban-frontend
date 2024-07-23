@@ -1,21 +1,26 @@
 import { Article, PencilSimpleLine, Trash } from "@phosphor-icons/react";
-import { forwardRef, HTMLAttributes } from "react";
+import { forwardRef, HTMLAttributes, useState } from "react";
+import { createPortal } from "react-dom";
+import UpdateTaskForm from "./UpdateTaskForm";
 
 type Props = {
   title: string;
   description: string;
   createdAt: string;
   _id: string;
+  status: "TODO" | "IN_PROGRESS" | "DONE";
 };
 
 const TaskCard = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement> & Props
->(({ title, description, createdAt, ...rest }, ref) => {
+>(({ title, description, createdAt, _id, status, ...rest }, ref) => {
+  const [show, setShow] = useState(false);
   return (
     <div
       ref={ref}
       {...rest}
+      onClick={() => setShow(true)}
       className="shadow  h-44 w-full rounded-md bg-blue-200 p-3 space-y-1.5 flex flex-col justify-between"
     >
       <p className="font-semibold text-base text-neutral-900 truncate">
@@ -42,6 +47,19 @@ const TaskCard = forwardRef<
           </button>
         </div>
       </div>
+      {show &&
+        createPortal(
+          <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 p-3">
+            <UpdateTaskForm
+              closeDialog={setShow}
+              taskId={_id}
+              title={title}
+              description={description}
+              status={status}
+            />
+          </div>,
+          document.body,
+        )}
     </div>
   );
 });
