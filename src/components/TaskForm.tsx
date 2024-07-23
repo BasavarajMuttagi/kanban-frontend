@@ -1,9 +1,11 @@
 import { useForm } from "react-hook-form";
 import { newTaskSchema, newTaskType } from "../zod/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import apiClient from "../axios/apiClient";
 import { RefetchContext } from "./KanbanBoard";
+import toast from "react-hot-toast";
+import { CircleNotch } from "@phosphor-icons/react";
 
 const TaskForm = ({
   closeDialog,
@@ -12,6 +14,7 @@ const TaskForm = ({
   closeDialog: Dispatch<SetStateAction<boolean>>;
   columnId: string;
 }) => {
+  const [isSpin, setIsSpin] = useState(false);
   const refetch = useContext(RefetchContext);
   const {
     register,
@@ -25,12 +28,16 @@ const TaskForm = ({
 
   const submitHandler = async (data: newTaskType) => {
     try {
+      setIsSpin(true);
       await apiClient.post("/board/task/create", data);
       reset();
       refetch();
       closeDialog((prev) => !prev);
     } catch (error) {
+      toast.error("Something went");
       console.log(error);
+    } finally {
+      setIsSpin(false);
     }
   };
   return (
@@ -70,9 +77,10 @@ const TaskForm = ({
           </button>
           <button
             type="submit"
-            className="px-3 py-2 rounded-md bg-blue-500 text-white  font-semibold tracking-wider hover:brightness-90"
+            className="flex items-center space-x-2 px-3 py-2 rounded-md bg-blue-500 text-white  font-semibold tracking-wider hover:brightness-90"
           >
-            Add Task
+            <p>Add Task</p>
+            {isSpin && <CircleNotch size={18} className="animate-spin" />}
           </button>
         </div>
       </form>

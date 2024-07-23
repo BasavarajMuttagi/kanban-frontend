@@ -1,8 +1,10 @@
 import { useForm } from "react-hook-form";
 import { newBoardSchema, newBoardType } from "../zod/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import apiClient from "../axios/apiClient";
+import toast from "react-hot-toast";
+import { CircleNotch } from "@phosphor-icons/react";
 
 const BoardForm = ({
   closeDialog,
@@ -11,6 +13,7 @@ const BoardForm = ({
   closeDialog: Dispatch<SetStateAction<boolean>>;
   refetch: () => void;
 }) => {
+  const [isSpin, setIsSpin] = useState(false);
   const {
     register,
     reset,
@@ -22,12 +25,16 @@ const BoardForm = ({
 
   const submitHandler = async (data: newBoardType) => {
     try {
+      setIsSpin(true);
       await apiClient.post("/board/create-board", data);
       reset();
       refetch();
       closeDialog((prev) => !prev);
     } catch (error) {
+      toast.error("Something went");
       console.log(error);
+    } finally {
+      setIsSpin(false);
     }
     reset();
   };
@@ -68,9 +75,10 @@ const BoardForm = ({
           </button>
           <button
             type="submit"
-            className="px-3 py-2 rounded-md bg-blue-500 text-white  font-semibold tracking-wider hover:brightness-90"
+            className="flex items-center space-x-2 px-3 py-2 rounded-md bg-blue-500 text-white  font-semibold tracking-wider hover:brightness-90"
           >
-            Create
+            <p>Create</p>{" "}
+            {isSpin && <CircleNotch size={18} className="animate-spin" />}
           </button>
         </div>
       </form>
