@@ -35,7 +35,7 @@ const useKanbanStore = create<store>()(
         }));
       },
     }),
-    storageModule
-  )
+    storageModule,
+  ),
 );
 export default useKanbanStore;
