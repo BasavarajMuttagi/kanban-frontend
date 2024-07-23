@@ -11,7 +11,7 @@ const NavBar = () => {
         <Notepad size={32} weight="fill" />
       </NavLink>
       {!token && (
-        <ul className="flex items-center space-x-10">
+        <ul className="hidden sm:flex items-center space-x-10">
           <li className="group">
             <NavLink to={"/login"}>
               <button className="px-3 py-1.5 rounded-md hover:bg-white hover:text-blue-500  group-has-[>a.active]:bg-white group-has-[>a.active]:text-blue-500">

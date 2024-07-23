@@ -18,6 +18,7 @@ const HandleCallback = () => {
         setToken(token);
         setDisplayName(decodedToken.name);
         navigate("/", { replace: true });
+        location.reload();
       } catch (error) {
         navigate("/login", {
           state: { error: "Authentication failed. Please try again." },
