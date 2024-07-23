@@ -1,9 +1,16 @@
 import { useForm } from "react-hook-form";
 import { userSignUpSchema, userSignUpType } from "../zod/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import google from "../assets/google.png";
+import apiClient from "../axios/apiClient";
+import toast from "react-hot-toast";
+import { useState } from "react";
+import { CircleNotch } from "@phosphor-icons/react";
 const SignUp = () => {
+  const navigate = useNavigate();
+  const [isSpin, setIsSpin] = useState(false);
+
   const {
     register,
     reset,
@@ -13,14 +20,22 @@ const SignUp = () => {
     resolver: zodResolver(userSignUpSchema),
   });
 
-  const submitHandler = (data: userSignUpType) => {
-    console.log(data);
-    reset();
+  const onSubmit = async (data: userSignUpType) => {
+    try {
+      await apiClient.post("/auth/signup", data);
+      toast.success("Successfully signed up");
+      reset();
+      navigate("/");
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setIsSpin(false);
+    }
   };
   return (
     <div className="flex flex-col items-center space-y-8 border-blue-500 border rounded-md shadow max-w-md w-full py-10 px-4">
       <h1 className="font-bold text-2xl">Sign Up</h1>
-      <form className="space-y-7 w-full" onSubmit={handleSubmit(submitHandler)}>
+      <form className="space-y-7 w-full" onSubmit={handleSubmit(onSubmit)}>
         <div className="relative">
           <input
             {...register("firstname")}
@@ -83,9 +98,10 @@ const SignUp = () => {
         </div>
         <button
           type="submit"
-          className="px-3 py-2 rounded-md bg-blue-500 text-white w-full font-semibold tracking-wider hover:brightness-90"
+          className="px-3 py-2 rounded-md bg-blue-500 text-white w-full font-semibold tracking-wider flex items-center justify-center space-x-2 hover:brightness-90"
         >
-          Sign up
+          <p>Sign up</p>
+          {isSpin && <CircleNotch size={18} className="animate-spin" />}
         </button>
       </form>
       <div className="flex items-center space-x-2">
