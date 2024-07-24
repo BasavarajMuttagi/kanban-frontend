@@ -15,7 +15,7 @@ const Login = () => {
   const [isSpin, setIsSpin] = useState(false);
   const [isSpinGoogle, setIsSpinGoogle] = useState(false);
 
-  const location = useLocation();
+  const loc = useLocation();
   const {
     register,
     reset,
@@ -33,6 +33,7 @@ const Login = () => {
       setToken(res.data.token);
       setDisplayName(res.data.user.fullname);
       navigate("/", { replace: true });
+      location.reload();
       reset();
     } catch (error) {
       toast.error("Something went wrong");
@@ -42,11 +43,11 @@ const Login = () => {
   };
 
   useEffect(() => {
-    const state = location.state;
+    const state = loc.state;
     if (state && state.error) {
       toast.error(state.error);
     }
-  }, [location]);
+  }, [loc]);
 
   const googleLogin = async () => {
     try {
