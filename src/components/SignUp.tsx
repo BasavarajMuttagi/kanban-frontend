@@ -23,6 +23,7 @@ const SignUp = () => {
 
   const onSubmit = async (data: userSignUpType) => {
     try {
+      setIsSpin(true);
       await apiClient.post("/auth/signup", data);
       toast.success("Successfully signed up");
       reset();
