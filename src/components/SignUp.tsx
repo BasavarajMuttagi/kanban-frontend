@@ -10,7 +10,7 @@ import { CircleNotch } from "@phosphor-icons/react";
 const SignUp = () => {
   const navigate = useNavigate();
   const [isSpin, setIsSpin] = useState(false);
-
+  const [isSpinGoogle, setIsSpinGoogle] = useState(false);
   const {
     register,
     reset,
@@ -32,6 +32,18 @@ const SignUp = () => {
       setIsSpin(false);
     }
   };
+
+  const googleLogin = async () => {
+    try {
+      setIsSpinGoogle(true);
+      await apiClient.get("/auth/google");
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setIsSpinGoogle(false);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center space-y-8 border-blue-500 border rounded-md shadow max-w-md w-full py-10 px-4">
       <h1 className="font-bold text-2xl">Sign Up</h1>
@@ -114,7 +126,11 @@ const SignUp = () => {
         </Link>
       </div>
 
-      <button className="px-3 py-2 rounded-md  text-neutral-900 border border-neutral-500 w-full font-semibold tracking-wider flex space-x-1 items-center justify-center hover:bg-neutral-100">
+      <button
+        disabled={isSpinGoogle}
+        onClick={() => googleLogin()}
+        className="px-3 py-2 rounded-md  text-neutral-900 border border-neutral-500 w-full font-semibold tracking-wider flex space-x-1 items-center justify-center hover:bg-neutral-100"
+      >
         <span>Sign up with</span>
         <img src={google} alt="google icon" className="aspect-square w-7" />
       </button>

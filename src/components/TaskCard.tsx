@@ -10,7 +10,7 @@ import UpdateTaskForm from "./UpdateTaskForm";
 import apiClient from "../axios/apiClient";
 import { RefetchContext } from "./KanbanBoard";
 import { twMerge } from "tailwind-merge";
-
+import moment from "moment";
 type Props = {
   title: string;
   description: string;
@@ -56,6 +56,9 @@ const TaskCard = forwardRef<
     }
   };
 
+  const formattedDate = moment(createdAt).format(
+    "ddd, MMMM D, YYYY, hh:mm:ss A",
+  );
   return (
     <div
       ref={ref}
@@ -72,7 +75,9 @@ const TaskCard = forwardRef<
         {description}
       </div>
       <div className="flex items-center justify-between">
-        <div className="text-xs text-neutral-500 font-medium">{createdAt}</div>
+        <div className="text-xs text-neutral-500 font-medium">
+          {formattedDate}
+        </div>
         <div className="flex items-center space-x-5 justify-end">
           <button
             onClick={() => {
