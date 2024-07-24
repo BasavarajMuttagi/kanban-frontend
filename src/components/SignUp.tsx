@@ -7,6 +7,7 @@ import apiClient from "../axios/apiClient";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { CircleNotch } from "@phosphor-icons/react";
+import axios from "axios";
 const SignUp = () => {
   const navigate = useNavigate();
   const [isSpin, setIsSpin] = useState(false);
@@ -27,7 +28,11 @@ const SignUp = () => {
       reset();
       navigate("/");
     } catch (error) {
-      toast.error("Something went wrong");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      } else {
+        toast.error("Something went wrong");
+      }
     } finally {
       setIsSpin(false);
     }

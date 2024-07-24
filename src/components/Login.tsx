@@ -8,6 +8,7 @@ import useKanbanStore from "../store";
 import apiClient from "../axios/apiClient";
 import toast from "react-hot-toast";
 import { CircleNotch } from "@phosphor-icons/react";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Login = () => {
     try {
       setIsSpin(true);
       const res = await apiClient.post("/auth/login", data);
-      toast.success("Logged in successfully");
+      toast.success(res.data.message);
       setToken(res.data.token);
       setDisplayName(res.data.user.fullname);
       setEmail(res.data.user.email);
@@ -37,7 +38,11 @@ const Login = () => {
       location.reload();
       reset();
     } catch (error) {
-      toast.error("Something went wrong");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      } else {
+        toast.error("Something went wrong");
+      }
     } finally {
       setIsSpin(false);
     }
