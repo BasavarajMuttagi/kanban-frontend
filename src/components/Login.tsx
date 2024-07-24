@@ -11,7 +11,7 @@ import { CircleNotch } from "@phosphor-icons/react";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setToken, setDisplayName } = useKanbanStore();
+  const { setToken, setDisplayName, setEmail } = useKanbanStore();
   const [isSpin, setIsSpin] = useState(false);
   const [isSpinGoogle, setIsSpinGoogle] = useState(false);
 
@@ -32,6 +32,7 @@ const Login = () => {
       toast.success("Logged in successfully");
       setToken(res.data.token);
       setDisplayName(res.data.user.fullname);
+      setEmail(res.data.user.email);
       navigate("/", { replace: true });
       location.reload();
       reset();
