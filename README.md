@@ -24,7 +24,7 @@ This project is a web application for Kanban board.
 ## Technologies Used
 
 - **Frontend:** React using Typescript, Tailwind, Zod, Zustand, hookform, react-hot-toast, axios,moment
-- **Backend:** Node.js, Express.js using Typescript, Zod, Mongo DB, passport, jsonwebtoken.
+- **Backend:** Node.js, Express.js using Typescript, Zod, Mongo DB, google-auth-library, jsonwebtoken.
 - **Database:** MongoDB
 - **Deployment:** Project deployed on Vercel
 
