@@ -58,7 +58,8 @@ const Login = () => {
   const googleLogin = async () => {
     try {
       setIsSpinGoogle(true);
-      await apiClient.get("/auth/google");
+      const response = await apiClient.get("/auth/google");
+      window.open(response.data.authUrl, "_self");
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
